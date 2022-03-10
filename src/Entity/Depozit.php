@@ -2,14 +2,29 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\DepozitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
+/*Depozit - read: name, dataIntrare, dataIesire, marfa, angajat
+Depozit - write exclus: dataIesire*/
+
 #[ORM\Entity(repositoryClass: DepozitRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+    itemOperations: [
+        'put'
+    ],
+    collectionOperations: [
+        'get',
+        'post'
+    ]
+)]
 class Depozit
 {
     #[ORM\Id]
@@ -17,21 +32,27 @@ class Depozit
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Groups(["read", "write"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $nume;
 
+    #[Groups("write")]
     #[ORM\Column(type: 'string', length: 255)]
     private $locatie;
 
+    #[Groups(["read", "write"])]
     #[ORM\Column(type: 'date')]
     private $dataIntrare;
 
+    #[Groups("read")]
     #[ORM\Column(type: 'date', nullable: true)]
     private $dataIesire;
 
+    #[Groups(["read", "write"])]
     #[ORM\OneToMany(mappedBy: 'depozit', targetEntity: marfa::class, orphanRemoval: true)]
     private $marfa;
 
+    #[Groups(["read", "write"])]
     #[ORM\OneToOne(inversedBy: 'depozit', targetEntity: angajat::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private $angajat;

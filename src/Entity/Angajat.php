@@ -7,7 +7,15 @@ use App\Repository\AngajatRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AngajatRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    itemOperations: [
+        'put',
+        'delete'
+    ],
+    collectionOperations: [
+        'post'
+    ]
+)]
 class Angajat
 {
     #[ORM\Id]

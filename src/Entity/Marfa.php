@@ -7,7 +7,14 @@ use App\Repository\MarfaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MarfaRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    itemOperations: [
+
+    ],
+    collectionOperations: [
+        'post'
+    ]
+)]
 class Marfa
 {
     #[ORM\Id]
